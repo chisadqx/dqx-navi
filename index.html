@@ -814,10 +814,13 @@
     document.title = fixedTitle;
 }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const titleEl = document.getElementById('siteTitleDisplay');
-        if (titleEl) titleEl.textContent = '드래곤 퀘스트 10 일과·주과 내비';
-    });
+window.addEventListener('load', () => {
+    const titleEl = document.getElementById('siteTitleDisplay');
+    const subEl = document.getElementById('siteSubtitleDisplay');
+    if (titleEl) titleEl.textContent = '드래곤 퀘스트 10 일과·주과 내비';
+    if (subEl) subEl.textContent = '일일·주간 숙제 및 주요 콘텐츠 진행 현황';
+    document.title = '드래곤 퀘스트 10 일과·주과 내비';
+});
 
         // 3. 전체 UI 렌더링
         function renderAll() {
