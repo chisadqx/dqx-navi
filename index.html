@@ -803,13 +803,16 @@
         }
 
         function applySiteMeta() {
-        const defaultTitle = '드래곤 퀘스트 10 일과·주과 내비';
-        const defaultSubtitle = '일일·주간 숙제 및 주요 콘텐츠 진행 현황';
+    const fixedTitle = '드래곤 퀘스트 10 일과·주과 내비';
+    const fixedSubtitle = '일일·주간 숙제 및 주요 콘텐츠 진행 현황';
 
-        document.getElementById('siteTitleDisplay').textContent = siteMeta.title || defaultTitle;
-        document.getElementById('siteSubtitleDisplay').textContent = siteMeta.subtitle || defaultSubtitle;
-        document.title = siteMeta.title || '드래곤 퀘스트 10 일과·주과 내비';
-    }
+    siteMeta.title = fixedTitle;
+    siteMeta.subtitle = fixedSubtitle;
+
+    document.getElementById('siteTitleDisplay').textContent = fixedTitle;
+    document.getElementById('siteSubtitleDisplay').textContent = fixedSubtitle;
+    document.title = fixedTitle;
+}
 
     document.addEventListener('DOMContentLoaded', () => {
         const titleEl = document.getElementById('siteTitleDisplay');
