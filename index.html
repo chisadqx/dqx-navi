@@ -554,7 +554,7 @@
         let checkedMap = {};
         let currentCategory = 'all';
         let siteMeta = {
-            title: '모험가 일과·주과 내비',
+            title: '드래곤 퀘스트 10 일과·주과 내비',
             subtitle: '일일·주간 숙제 및 주요 콘텐츠 진행 현황'
         };
 
@@ -803,9 +803,9 @@
         }
 
         function applySiteMeta() {
-            document.getElementById('siteTitleDisplay').textContent = siteMeta.title || '모험가 일과·주과 내비';
+            document.getElementById('siteTitleDisplay').textContent = siteMeta.title || '드래곤 퀘스트 10 일과·주과 내비';
             document.getElementById('siteSubtitleDisplay').textContent = siteMeta.subtitle || '';
-            document.title = siteMeta.title || '모험가 일과·주과 내비';
+            document.title = siteMeta.title || '드래곤 퀘스트 10 일과·주과 내비';
         }
 
         // 3. 전체 UI 렌더링
@@ -1250,7 +1250,7 @@
         }
 
         function updateSiteMeta() {
-            siteMeta.title = document.getElementById('settingSiteTitle').value.trim() || '모험가 일과·주과 내비';
+            siteMeta.title = document.getElementById('settingSiteTitle').value.trim() || '드래곤 퀘스트 10 일과·주과 내비';
             siteMeta.subtitle = document.getElementById('settingSiteSubtitle').value.trim();
             applySiteMeta();
             saveData();
