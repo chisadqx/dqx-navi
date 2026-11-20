@@ -256,8 +256,8 @@
                 <div class="truncate">
                     <div class="flex items-center gap-2">
                         <h1 id="siteTitleDisplay" class="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white truncate">
-                            드래곤 퀘스트 10 일과·주과 내비
-                        </h1>
+    드래곤 퀘스트 10 일과·주과 내비
+</h1>
                         <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800">
                             CHECKLIST
                         </span>
@@ -553,10 +553,10 @@
         let items = [];
         let checkedMap = {};
         let currentCategory = 'all';
-        let siteMeta = {
-            title: '드래곤 퀘스트 10 일과·주과 내비',
-            subtitle: '일일·주간 숙제 및 주요 콘텐츠 진행 현황'
-        };
+       let siteMeta = {
+    title: '드래곤 퀘스트 10 일과·주과 내비',
+    subtitle: '일일·주간 숙제 및 주요 콘텐츠 진행 현황'
+};
 
         // 태그 색상 매핑
         const TAG_STYLES = {
@@ -808,7 +808,7 @@
 
     document.getElementById('siteTitleDisplay').textContent = siteMeta.title || defaultTitle;
     document.getElementById('siteSubtitleDisplay').textContent = siteMeta.subtitle || defaultSubtitle;
-    document.title = siteMeta.title || defaultTitle;
+    document.title = siteMeta.title || '드래곤 퀘스트 10 일과·주과 내비';
 }
 
         // 3. 전체 UI 렌더링
