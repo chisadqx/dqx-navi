@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="ko" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모험가 내비 - 일과 · 주과 체크리스트</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Noto Sans KR & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        dqx: {
+                            blue: '#2563eb',
+                            light: '#eff6ff',
+                            gold: '#d97706',
+                            darkbg: '#0f172a',
+                            darkcard: '#1e293b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 커스텀 스크롤바 및 부드러운 전환 효과 */
+        body {
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+        .card-transition {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* 체크박스 커스텀 애니메이션 */
+        .check-pop {
+            animation: pop 0.22s ease-out;
+        }
+        @keyframes pop {
+            0% { transform: scale(0.85); }
+            50% { transform: scale(1.12); }
+            100% { transform: scale(1); }
+        }
+        /* 탭 가로 스크롤 숨김 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col">
+
+    <!-- =====================================================================
+         [초기 데이터 설정 영역]
+         다른 사람에게 공유할 때 내가 만든 목록이 기본으로 뜨게 하려면:
+         1. 웹페이지 우측 상단 [목록 편집 / 공유 코드] 버튼을 누릅니다.
+         2. 목록을 수정한 뒤 [공유용 코드 복사]를 클릭합니다.
+         3. 아래 DEFAULT_ITEMS = [ ... ]; 부분을 복사한 코드로 덮어쓰세요!
+         ===================================================================== -->
+    <script>
+        const DEFAULT_ITEMS = [
+    {
+        "id": "d-1",
+        "category": "daily",
+        "title": "일일 토벌 의뢰 (メギストリス 등)",
+        "note": "매일 06:00 리셋 · 4만 골드 / 특훈 스탬프",
+        "tag": "골드",
+        "tagColor": "amber",
+        "url": ""
+    },
+    {
+        "id": "d-2",
+        "category": "daily",
+        "title": "장인 길드 납품 의뢰",
+        "note": "매일 06:00 리셋 · 장인 경험치 및 길드 포인트",
+        "tag": "경험치",
+        "tagColor": "emerald",
+        "url": ""
+    },
+    {
+        "id": "d-3",
+        "category": "daily",
+        "title": "몬스터 목장 / 툴 출석 & 후쿠비키",
+        "note": "스마트폰 앱 연동 · 인연 포인트 및 코인",
+        "tag": "앱 연동",
+        "tagColor": "sky",
+        "url": ""
+    },
+    {
+        "id": "d-4",
+        "category": "daily",
+        "title": "강전사 서(強戦士の書) 오브 수집",
+        "note": "매일 06:00 리셋 · 무지개 오브 제작 재료",
+        "tag": "골드",
+        "tagColor": "amber",
+        "url": ""
+    },
+    {
+        "id": "d-5",
+        "category": "daily",
+        "title": "파니갈룸 (源世庫パニガルム) 일일 보너스",
+        "note": "창생주(創生珠) 획득 · 여신의 나무 육성",
+        "tag": "육성",
+        "tagColor": "purple",
+        "url": ""
+    },
+    {
+        "id": "w-1",
+        "category": "weekly",
+        "title": "주간 토벌 의뢰 (진·위 렌더시아)",
+        "note": "매주 일요일 06:00 리셋 · 경험치 2회분 확보 가능",
+        "tag": "경험치",
+        "tagColor": "emerald",
+        "url": ""
+    },
+    {
+        "id": "w-2",
+        "category": "weekly",
+        "title": "피라미드의 비보 (브로치 / 앙크)",
+        "note": "매주 일요일 06:00 리셋 · 황금 브로치 확정 층 확인",
+        "tag": "액세서리",
+        "tagColor": "rose",
+        "url": ""
+    },
+    {
+        "id": "w-3",
+        "category": "weekly",
+        "title": "만마의 탑 (万魔の塔) 주간 보상",
+        "note": "매주 일요일 06:00 리셋 · 문장(紋章) 및 대문장 파편",
+        "tag": "액세서리",
+        "tagColor": "rose",
+        "url": ""
+    },
+    {
+        "id": "w-4",
+        "category": "weekly",
+        "title": "시련의 문 (試練の門)",
+        "note": "매주 일요일 06:00 리셋 · 레벨업 및 보주 구슬",
+        "tag": "경험치",
+        "tagColor": "emerald",
+        "url": ""
+    },
+    {
+        "id": "w-5",
+        "category": "weekly",
+        "title": "달인 퀘스트 (達人クエスト)",
+        "note": "매주 일요일 06:00 리셋 · 보주(宝珠) 최대 5개 보상",
+        "tag": "육성",
+        "tagColor": "purple",
+        "url": ""
+    },
+    {
+        "id": "w-6",
+        "category": "weekly",
+        "title": "에피소드 의뢰장 & 천성향 의뢰장",
+        "note": "매주 일요일 06:00 리셋 · 연금석 / 경험치 고서",
+        "tag": "보상",
+        "tagColor": "blue",
+        "url": ""
+    },
+    {
+        "id": "m-1",
+        "category": "monthly",
+        "title": "사신의 궁전 (邪神の宮殿)",
+        "note": "매월 10일 / 25일 갱신 · 전신의 벨트 봉인 및 천옥",
+        "tag": "정기",
+        "tagColor": "indigo",
+        "url": ""
+    },
+    {
+        "id": "m-2",
+        "category": "monthly",
+        "title": "로스트 아키텍트 / 황혼의 주사정",
+        "note": "매월 1일 / 15일 갱신 · 황금 꽃잎 및 호화 보상",
+        "tag": "정기",
+        "tagColor": "indigo",
+        "url": ""
+    },
+    {
+        "id": "m-3",
+        "category": "monthly",
+        "title": "테스의 날 (テンの日) 프레젠트 티켓",
+        "note": "매월 10일 한정 · 보스 카드 & 프레젠트 티켓 수령",
+        "tag": "월간 이벤트",
+        "tagColor": "amber",
+        "url": ""
+    },
+    {
+        "id": "m-4",
+        "category": "monthly",
+        "title": "월간 기간 한정 콘텐츠 (20일 ~ 26일)",
+        "note": "매월 20일 06:00 ~ 26일 05:59 진행",
+        "tag": "기간 한정",
+        "tagColor": "sky",
+        "url": ""
+    },
+    {
+        "id": "c-1",
+        "category": "major",
+        "title": "성수호자의 투전기 / 심연의 죄인들",
+        "note": "일일 유색 수정 / 라크리마 수집 · 드레스업 장비 및 반지",
+        "tag": "엔드",
+        "tagColor": "rose",
+        "url": ""
+    },
+    {
+        "id": "c-2",
+        "category": "major",
+        "title": "코인 보스 (신규 보스 액세서리 완성)",
+        "note": "로자리오 / 라스트 쵸커 / 가면 등 이론치 제작",
+        "tag": "액세서리",
+        "tagColor": "rose",
+        "url": ""
+    },
+    {
+        "id": "c-3",
+        "category": "major",
+        "title": "아스톨티아 방위군 (防衛軍)",
+        "note": "전리품 교환 · 속성 방패 및 무기 파밍",
+        "tag": "장비",
+        "tagColor": "blue",
+        "url": ""
+    }
+];
+
+        const CATEGORIES = [
+            { id: 'all', name: '전체 보기', badge: 'ALL', resetInfo: '전체 콘텐츠 한눈에 보기' },
+            { id: 'daily', name: '일과 (일일)', badge: 'DAILY', resetInfo: '매일 오전 06:00 초기화 기준' },
+            { id: 'weekly', name: '주과 (주간)', badge: 'WEEKLY', resetInfo: '매주 일요일 오전 06:00 초기화 기준' },
+            { id: 'monthly', name: '월과 / 정기', badge: 'MONTHLY', resetInfo: '매월 1일·10일·15일·20~26일·25일 갱신' },
+            { id: 'major', name: '주요 콘텐츠', badge: 'CONTENT', resetInfo: '엔드 콘텐츠 및 장기 육성 목표' }
+        ];
+    </script>
+
+    <!-- 상단 네비게이션 헤더 -->
+    <header class="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2">
+            <!-- 로고 및 타이틀 -->
+            <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-sm shrink-0">
+                    <!-- 나침반 SVG 아이콘 -->
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.5 6.5l-2.1 5.6-5.6 2.1 2.1-5.6 5.6-2.1z"/>
+                    </svg>
+                </div>
+                <div class="truncate">
+                    <div class="flex items-center gap-2">
+                        <h1 id="siteTitleDisplay" class="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white truncate">
+                            모험가 일과·주과 내비
+                        </h1>
+                        <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800">
+                            CHECKLIST
+                        </span>
+                    </div>
+                    <p id="siteSubtitleDisplay" class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                        일일·주간 숙제 및 주요 콘텐츠 진행 현황
+                    </p>
+                </div>
+            </div>
+
+            <!-- 우측 액션 버튼들 -->
+            <div class="flex items-center gap-2 shrink-0">
+                <!-- 목록 편집 / 공유 모달 열기 -->
+                <button onclick="openEditorModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition active:scale-95">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    <span>목록 편집 · 공유</span>
+                </button>
+
+                <!-- 다크 모드 토글 버튼 -->
+                <button onclick="toggleTheme()" aria-label="테마 전환" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                    <!-- 해 아이콘 (다크모드일 때 표시) -->
+                    <svg id="sunIcon" class="w-4 h-4 hidden dark:block text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <!-- 달 아이콘 (라이트모드일 때 표시) -->
+                    <svg id="moonIcon" class="w-4 h-4 block dark:hidden text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 대시보드 컨텐츠 -->
+    <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+        <!-- 1. 전체 진행률 및 요약 대시보드 카드 -->
+        <section class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">PROGRESS SUMMARY</span>
+                        <span id="lastUpdatedBadge" class="text-[11px] text-slate-400 dark:text-slate-500">자동 저장됨</span>
+                    </div>
+                    <div class="mt-1 flex items-baseline gap-2.5">
+                        <span id="totalPercent" class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">0%</span>
+                        <span id="totalCountText" class="text-sm font-medium text-slate-500 dark:text-slate-400">(0 / 0 완료)</span>
+                    </div>
+                </div>
+
+                <!-- 빠른 초기화 컨트롤 버튼 그룹 -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="resetCategoryChecks('daily')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:hover:bg-amber-900/60 dark:text-amber-300 border border-amber-200/70 dark:border-amber-800/60 transition">
+                        일과 초기화
+                    </button>
+                    <button onclick="resetCategoryChecks('weekly')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 dark:text-emerald-300 border border-emerald-200/70 dark:border-emerald-800/60 transition">
+                        주과 초기화
+                    </button>
+                    <button onclick="resetCategoryChecks('monthly')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800/60 transition">
+                        월과 초기화
+                    </button>
+                    <button onclick="resetAllChecks()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition">
+                        전체 체크 해제
+                    </button>
+                </div>
+            </div>
+
+            <!-- 메인 프로그레스 바 -->
+            <div class="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div id="totalProgressBar" class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+            </div>
+
+            <!-- 카테고리별 미니 진행률 뱃지 그리드 -->
+            <div id="categoryMiniStats" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+                <!-- JS로 동적 렌더링 -->
+            </div>
+        </section>
+
+        <!-- 2. 카테고리 탭 네비게이션 & 필터 바 -->
+        <section class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <!-- 카테고리 탭 -->
+            <div id="categoryTabs" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 sm:pb-0">
+                <!-- JS로 동적 렌더링 -->
+            </div>
+
+            <!-- 우측 필터 및 검색 -->
+            <div class="flex items-center gap-2 shrink-0">
+                <!-- 미완료만 보기 토글 -->
+                <label class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-medium cursor-pointer select-none hover:border-blue-400 transition">
+                    <input type="checkbox" id="hideCompletedToggle" onchange="renderChecklist()" class="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
+                    <span>미완료만 보기</span>
+                </label>
+
+                <!-- 빠른 검색창 -->
+                <div class="relative flex-1 sm:w-48">
+                    <input type="text" id="searchInput" oninput="renderChecklist()" placeholder="항목 검색..." class="w-full pl-8 pr-3 py-1.5 rounded-xl text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition">
+                    <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 체크리스트 카드 컨테이너 -->
+        <section id="checklistContainer" class="space-y-6">
+            <!-- JS로 카테고리 섹션 및 카드 동적 렌더링 -->
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 mt-6 border-t border-slate-200/70 dark:border-slate-800/70 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 dark:text-slate-500">
+        <p>체크 상태와 커스텀 목록은 현재 브라우저에 자동 저장됩니다.</p>
+        <p>다른 사람과 공유하려면 우측 상단 <strong class="text-slate-600 dark:text-slate-300">[목록 편집 · 공유]</strong>에서 코드를 복사해 반영하세요.</p>
+    </footer>
+
+    <!-- =====================================================================
+         [목록 편집 및 공유 코드 내보내기 모달]
+         ===================================================================== -->
+    <div id="editorModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-3xl max-h-[90vh] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden">
+            
+            <!-- 모달 헤더 -->
+            <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">목록 편집 및 공유 설정</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">나만의 일과·주과 목록을 자유롭게 구성하고 공유용 코드를 추출하세요.</p>
+                </div>
+                <button onclick="closeEditorModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 모달 내부 탭 (1: 항목 추가/편집, 2: 사이트 제목 & 공유 코드 복사) -->
+            <div class="px-5 pt-3 border-b border-slate-200 dark:border-slate-800 flex gap-2 bg-slate-50/70 dark:bg-slate-950/40">
+                <button id="tabBtnManage" onclick="switchModalTab('manage')" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-900">
+                    1. 항목 추가 · 수정 · 순서
+                </button>
+                <button id="tabBtnShare" onclick="switchModalTab('share')" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400">
+                    2. 공유용 코드 내보내기 (GitHub용)
+                </button>
+            </div>
+
+            <!-- 모달 본문 (스크롤 영역) -->
+            <div class="p-5 overflow-y-auto flex-1 space-y-5">
+                
+                <!-- [탭 1] 항목 추가 및 목록 관리 -->
+                <div id="modalTabManage" class="space-y-5">
+                    <!-- 새 항목 추가 / 수정 폼 -->
+                    <form id="itemForm" onsubmit="handleSaveItem(event)" class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span id="formModeLabel" class="text-xs font-bold text-blue-600 dark:text-blue-400">+ 새 체크리스트 항목 추가</span>
+                            <button type="button" id="cancelEditBtn" onclick="resetItemForm()" class="hidden text-xs text-slate-500 hover:underline">수정 취소</button>
+                        </div>
+                        <input type="hidden" id="editItemId">
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">카테고리</label>
+                                <select id="inputCategory" class="w-full px-3 py-2 rounded-xl text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                                    <option value="daily">일과 (일일)</option>
+                                    <option value="weekly">주과 (주간)</option>
+                                    <option value="monthly">월과 / 정기</option>
+                                    <option value="major">주요 콘텐츠</option>
+                                </select>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">항목 제목 *</label>
+                                <input type="text" id="inputTitle" required placeholder="예: 일일 토벌 의뢰 (메기스트리스)" class="w-full px-3 py-2 rounded-xl text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">간단 메모 / 리셋 시간 안내</label>
+                                <input type="text" id="inputNote" placeholder="예: 매일 06:00 리셋 · 4만 골드 획득" class="w-full px-3 py-2 rounded-xl text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">보상 태그 (선택)</label>
+                                <div class="flex gap-1.5">
+                                    <input type="text" id="inputTag" placeholder="예: 골드" class="w-full px-2.5 py-2 rounded-xl text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                                    <select id="inputTagColor" class="px-2 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                                        <option value="amber">노랑</option>
+                                        <option value="emerald">초록</option>
+                                        <option value="blue">파랑</option>
+                                        <option value="rose">빨강</option>
+                                        <option value="purple">보라</option>
+                                        <option value="indigo">남색</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-end">
+                            <div class="flex-1">
+                                <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">공략 / 참고 링크 URL (선택)</label>
+                                <input type="url" id="inputUrl" placeholder="https://..." class="w-full px-3 py-2 rounded-xl text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                            </div>
+                            <button type="submit" id="saveItemBtn" class="px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition shrink-0">
+                                목록에 추가
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- 등록된 항목 리스트 (순서 변경, 수정, 삭제) -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xs font-bold text-slate-600 dark:text-slate-300">현재 등록된 항목 (<span id="editorTotalCount">0</span>개)</h3>
+                            <button type="button" onclick="restoreDefaultItems()" class="text-xs text-rose-500 hover:underline">기본 샘플 목록으로 복원</button>
+                        </div>
+                        <div id="editorItemList" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+                            <!-- JS로 동적 렌더링 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- [탭 2] 사이트 제목 수정 및 공유용 코드 내보내기 -->
+                <div id="modalTabShare" class="hidden space-y-5">
+                    <!-- 페이지 제목 커스텀 -->
+                    <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 space-y-3">
+                        <h3 class="text-xs font-bold text-slate-700 dark:text-slate-200">페이지 타이틀 설정</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] text-slate-500 mb-1">메인 제목</label>
+                                <input type="text" id="settingSiteTitle" oninput="updateSiteMeta()" class="w-full px-3 py-2 rounded-xl text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-500 mb-1">부제목 (설명)</label>
+                                <input type="text" id="settingSiteSubtitle" oninput="updateSiteMeta()" class="w-full px-3 py-2 rounded-xl text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GitHub Pages 공유 안내 및 코드 복사 -->
+                    <div class="space-y-2.5">
+                        <div class="p-3.5 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-800/60 text-xs text-blue-800 dark:text-blue-200 space-y-1.5 leading-relaxed">
+                            <p class="font-bold">💡 다른 사람에게 내 목록 그대로 공유하는 방법:</p>
+                            <ol class="list-decimal list-inside space-y-1 text-blue-700 dark:text-blue-300">
+                                <li>아래 <strong>[공유용 데이터 코드 복사]</strong> 버튼을 누릅니다.</li>
+                                <li>이 HTML 파일(`index.html`)을 메모장이나 코드 에디터로 엽니다.</li>
+                                <li>상단 부근의 <code class="px-1 py-0.5 rounded bg-blue-100 dark:bg-blue-900 font-mono">const DEFAULT_ITEMS = [ ... ];</code> 부분을 복사한 코드로 교체해 저장합니다.</li>
+                                <li>GitHub Pages에 올리면 접속하는 모든 사람에게 내가 만든 목록이 기본으로 보입니다!</li>
+                            </ol>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">생성된 DEFAULT_ITEMS 코드</span>
+                            <button type="button" onclick="copyExportCode()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                                </svg>
+                                <span>공유용 데이터 코드 복사</span>
+                            </button>
+                        </div>
+                        <textarea id="exportCodeBox" readonly rows="8" class="w-full p-3 rounded-xl font-mono text-xs bg-slate-900 text-emerald-300 border border-slate-700 focus:outline-none"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 모달 푸터 -->
+            <div class="px-5 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 flex justify-end">
+                <button onclick="closeEditorModal()" class="px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white transition">
+                    닫기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 커스텀 토스트 메시지 (alert 대체) -->
+    <div id="toastBox" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 translate-y-2">
+        <div id="toastMessage" class="px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs sm:text-sm font-medium shadow-lg">
+            알림 메시지
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         [애플리케이션 동작 로직]
+         ===================================================================== -->
+    <script>
+        // LocalStorage 키 정의
+        const STORAGE_KEYS = {
+            ITEMS: 'dqx_navi_items_v1',
+            CHECKS: 'dqx_navi_checks_v1',
+            THEME: 'dqx_navi_theme_v1',
+            META: 'dqx_navi_meta_v1'
+        };
+
+        // 애플리케이션 상태 변수
+        let items = [];
+        let checkedMap = {};
+        let currentCategory = 'all';
+        let siteMeta = {
+            title: '모험가 일과·주과 내비',
+            subtitle: '일일·주간 숙제 및 주요 콘텐츠 진행 현황'
+        };
+
+        // 태그 색상 매핑
+        const TAG_STYLES = {
+            amber: 'bg-amber-50 text-amber-700 border-amber-200/80 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/60',
+            emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/60',
+            blue: 'bg-blue-50 text-blue-700 border-blue-200/80 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/60',
+            sky: 'bg-sky-50 text-sky-700 border-sky-200/80 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-800/60',
+            rose: 'bg-rose-50 text-rose-700 border-rose-200/80 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/60',
+            purple: 'bg-purple-50 text-purple-700 border-purple-200/80 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800/60',
+            indigo: 'bg-indigo-50 text-indigo-700 border-indigo-200/80 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-800/60'
+        };
+
+        // 초기화 함수
+        function initApp() {
+            loadTheme();
+            loadData();
+            renderTabs();
+            renderAll();
+            startResetTimers();
+        }
+
+        // =====================================================================
+        // 실시간 리셋 카운트다운 계산 및 섹션 헤더 인라인 렌더링 (JST/KST 06:00 기준)
+        // =====================================================================
+        function startResetTimers() {
+            updateResetTimers();
+            setInterval(updateResetTimers, 1000);
+        }
+
+        function updateResetTimers() {
+            // 일본 시간(UTC+9, 한국과 동일) 기준으로 현재 시각 계산
+            const now = new Date();
+            const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const jstNow = new Date(utcTime + (9 * 3600000));
+
+            // 1. 일과 리셋: 매일 06:00
+            const nextDaily = new Date(jstNow);
+            nextDaily.setHours(6, 0, 0, 0);
+            if (jstNow >= nextDaily) {
+                nextDaily.setDate(nextDaily.getDate() + 1);
+            }
+            updateInlineBadge({
+                elementId: 'inlineTimer-daily',
+                diffMs: nextDaily - jstNow,
+                prefix: '리셋까지',
+                includeDays: false,
+                normalClass: 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200/70 dark:border-amber-800/60'
+            });
+
+            // 2. 주과 리셋: 매주 일요일 06:00
+            const nextWeekly = new Date(jstNow);
+            nextWeekly.setHours(6, 0, 0, 0);
+            const dayOfWeek = jstNow.getDay();
+            let daysUntilSunday = (7 - dayOfWeek) % 7;
+            if (daysUntilSunday === 0 && jstNow >= nextWeekly) {
+                daysUntilSunday = 7;
+            }
+            nextWeekly.setDate(nextWeekly.getDate() + daysUntilSunday);
+
+            updateInlineBadge({
+                elementId: 'inlineTimer-weekly',
+                diffMs: nextWeekly - jstNow,
+                prefix: '리셋까지',
+                includeDays: true,
+                normalClass: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200/70 dark:border-emerald-800/60'
+            });
+
+            // 3. 월과 · 정기 개별 리셋 (매월 1일, 15일, 10일, 25일 오전 06:00)
+            const monthlyConfigs = [
+                {
+                    day: 1,
+                    elementId: 'inlineTimer-monthly-1',
+                    prefix: '1일 리셋까지',
+                    normalClass: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200/70 dark:border-indigo-800/60'
+                },
+                {
+                    day: 15,
+                    elementId: 'inlineTimer-monthly-15',
+                    prefix: '15일 리셋까지',
+                    normalClass: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200/70 dark:border-indigo-800/60'
+                },
+                {
+                    day: 10,
+                    elementId: 'inlineTimer-monthly-10',
+                    prefix: '10일 리셋까지',
+                    normalClass: 'bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200/70 dark:border-purple-800/60'
+                },
+                {
+                    day: 25,
+                    elementId: 'inlineTimer-monthly-25',
+                    prefix: '25일 리셋까지',
+                    normalClass: 'bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200/70 dark:border-purple-800/60'
+                }
+            ];
+
+            monthlyConfigs.forEach(cfg => {
+                const targetDate = getNextSingleMonthDayTarget(jstNow, cfg.day, 6);
+                updateInlineBadge({
+                    elementId: cfg.elementId,
+                    diffMs: targetDate - jstNow,
+                    prefix: cfg.prefix,
+                    includeDays: true,
+                    normalClass: cfg.normalClass
+                });
+            });
+
+            // 4. 매월 20일 06:00 ~ 26일 05:59 기간 한정 카운트다운
+            updatePeriodWindowBadge({
+                elementId: 'inlineTimer-monthly-20-26',
+                jstNow: jstNow,
+                startDay: 20,
+                endDay: 26,
+                resetHour: 6
+            });
+        }
+
+        function updatePeriodWindowBadge({ elementId, jstNow, startDay, endDay, resetHour }) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+
+            const year = jstNow.getFullYear();
+            const month = jstNow.getMonth();
+
+            // 이번 달 기간(startDay 06:00 ~ endDay 06:00)
+            const currentStart = new Date(year, month, startDay, resetHour, 0, 0, 0);
+            const currentEnd = new Date(year, month, endDay, resetHour, 0, 0, 0);
+
+            const pad = (n) => String(n).padStart(2, '0');
+            const formatDiff = (ms) => {
+                const totalSec = Math.max(0, Math.floor(ms / 1000));
+                const d = Math.floor(totalSec / 86400);
+                const h = Math.floor((totalSec % 86400) / 3600);
+                const m = Math.floor((totalSec % 3600) / 60);
+                const s = totalSec % 60;
+                return `${d}일 ${pad(h)}:${pad(m)}:${pad(s)}`;
+            };
+
+            if (jstNow >= currentStart && jstNow < currentEnd) {
+                // 현재 20일 06:00 ~ 26일 05:59 진행 중 -> 종료(26일 06:00)까지 남은 시간
+                const remainingMs = currentEnd - jstNow;
+                const isEndingSoon = remainingMs <= 3600 * 1000;
+                const activeClass = isEndingSoon
+                    ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/70 dark:text-rose-400 border-rose-300 dark:border-rose-800 animate-pulse'
+                    : 'bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200/70 dark:border-sky-800/60';
+
+                el.className = `inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums border ${activeClass}`;
+                el.textContent = isEndingSoon
+                    ? `20일~26일 종료까지 ${formatDiff(remainingMs)} (임박)`
+                    : `20일~26일 진행 중 · 종료까지 ${formatDiff(remainingMs)}`;
+            } else {
+                // 진행 기간 외 -> 다음 20일 06:00 오픈까지 남은 시간
+                const nextStart = jstNow < currentStart
+                    ? currentStart
+                    : new Date(year, month + 1, startDay, resetHour, 0, 0, 0);
+                const remainingMs = nextStart - jstNow;
+                const idleClass = 'bg-slate-100 text-slate-600 dark:bg-slate-800/90 dark:text-slate-300 border-slate-200/80 dark:border-slate-700';
+
+                el.className = `inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums border ${idleClass}`;
+                el.textContent = `20일 오픈까지 ${formatDiff(remainingMs)}`;
+            }
+        }
+
+        function updateInlineBadge({ elementId, diffMs, prefix, includeDays, normalClass }) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+
+            const totalSeconds = Math.max(0, Math.floor(diffMs / 1000));
+            const days = Math.floor(totalSeconds / 86400);
+            const hours = Math.floor((totalSeconds % 86400) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            const pad = (n) => String(n).padStart(2, '0');
+            const timeStr = includeDays
+                ? `${days}일 ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+                : `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+
+            const isUrgent = totalSeconds <= 3600;
+            const urgentClass = 'bg-rose-50 text-rose-600 dark:bg-rose-950/70 dark:text-rose-400 border-rose-300 dark:border-rose-800 animate-pulse';
+
+            el.className = `inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums border ${isUrgent ? urgentClass : normalClass}`;
+            el.textContent = isUrgent ? `${prefix} ${timeStr} (임박)` : `${prefix} ${timeStr}`;
+        }
+
+        function getNextSingleMonthDayTarget(jstNow, targetDay, hour) {
+            const year = jstNow.getFullYear();
+            const month = jstNow.getMonth();
+            const candidate = new Date(year, month, targetDay, hour, 0, 0, 0);
+            if (jstNow < candidate) {
+                return candidate;
+            }
+            return new Date(year, month + 1, targetDay, hour, 0, 0, 0);
+        }
+
+        // 1. 테마 로드 및 전환
+        function loadTheme() {
+            const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem(STORAGE_KEYS.THEME, isDark ? 'dark' : 'light');
+        }
+
+        // 2. 데이터 로드 및 저장
+        function loadData() {
+            try {
+                const savedItems = localStorage.getItem(STORAGE_KEYS.ITEMS);
+                items = savedItems ? JSON.parse(savedItems) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+
+                const savedChecks = localStorage.getItem(STORAGE_KEYS.CHECKS);
+                checkedMap = savedChecks ? JSON.parse(savedChecks) : {};
+
+                const savedMeta = localStorage.getItem(STORAGE_KEYS.META);
+                if (savedMeta) {
+                    siteMeta = JSON.parse(savedMeta);
+                }
+            } catch (e) {
+                console.error('데이터 로드 중 오류:', e);
+                items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+                checkedMap = {};
+            }
+            applySiteMeta();
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.ITEMS, JSON.stringify(items));
+                localStorage.setItem(STORAGE_KEYS.CHECKS, JSON.stringify(checkedMap));
+                localStorage.setItem(STORAGE_KEYS.META, JSON.stringify(siteMeta));
+                
+                const badge = document.getElementById('lastUpdatedBadge');
+                const now = new Date();
+                badge.textContent = `저장됨 (${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')})`;
+            } catch (e) {
+                showToast('저장 공간이 부족하여 저장에 실패했습니다.');
+            }
+        }
+
+        function applySiteMeta() {
+            document.getElementById('siteTitleDisplay').textContent = siteMeta.title || '모험가 일과·주과 내비';
+            document.getElementById('siteSubtitleDisplay').textContent = siteMeta.subtitle || '';
+            document.title = siteMeta.title || '모험가 일과·주과 내비';
+        }
+
+        // 3. 전체 UI 렌더링
+        function renderAll() {
+            renderStats();
+            renderChecklist();
+        }
+
+        // 상단 진행률 및 카테고리별 미니 요약 렌더링
+        function renderStats() {
+            const total = items.length;
+            const completed = items.filter(item => checkedMap[item.id]).length;
+            const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+            document.getElementById('totalPercent').textContent = `${percent}%`;
+            document.getElementById('totalCountText').textContent = `(${completed} / ${total} 완료)`;
+            document.getElementById('totalProgressBar').style.width = `${percent}%`;
+
+            // 카테고리별 통계 (all 제외)
+            const statsContainer = document.getElementById('categoryMiniStats');
+            const subCategories = CATEGORIES.filter(c => c.id !== 'all');
+
+            statsContainer.innerHTML = subCategories.map(cat => {
+                const catItems = items.filter(i => i.category === cat.id);
+                const catDone = catItems.filter(i => checkedMap[i.id]).length;
+                const catTotal = catItems.length;
+                const isAllDone = catTotal > 0 && catDone === catTotal;
+
+                return `
+                    <button onclick="selectCategory('${cat.id}')" class="flex items-center justify-between p-2.5 rounded-xl border text-left transition ${
+                        isAllDone 
+                        ? 'bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/60' 
+                        : 'bg-slate-50/80 dark:bg-slate-800/50 border-slate-200/60 dark:border-slate-800 hover:border-blue-300'
+                    }">
+                        <div class="min-w-0">
+                            <div class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">${cat.name}</div>
+                            <div class="text-sm font-bold ${isAllDone ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-800 dark:text-slate-100'}">
+                                ${catDone} <span class="text-xs font-normal text-slate-400">/ ${catTotal}</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded-lg ${
+                            isAllDone 
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300' 
+                            : 'bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400'
+                        }">
+                            ${catTotal === 0 ? '0%' : Math.round((catDone / catTotal) * 100) + '%'}
+                        </span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // 카테고리 탭 렌더링
+        function renderTabs() {
+            const tabContainer = document.getElementById('categoryTabs');
+            tabContainer.innerHTML = CATEGORIES.map(cat => {
+                const active = currentCategory === cat.id;
+                return `
+                    <button onclick="selectCategory('${cat.id}')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition ${
+                        active 
+                        ? 'bg-slate-900 text-white dark:bg-blue-600 dark:text-white shadow-sm' 
+                        : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }">
+                        ${cat.name}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectCategory(catId) {
+            currentCategory = catId;
+            renderTabs();
+            renderChecklist();
+        }
+
+        // 메인 체크리스트 카드 렌더링
+        function renderChecklist() {
+            const container = document.getElementById('checklistContainer');
+            const hideCompleted = document.getElementById('hideCompletedToggle').checked;
+            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+
+            // 표시할 카테고리 목록 결정
+            const targetCategories = currentCategory === 'all' 
+                ? CATEGORIES.filter(c => c.id !== 'all') 
+                : CATEGORIES.filter(c => c.id === currentCategory);
+
+            let html = '';
+            let totalRenderedCount = 0;
+
+            targetCategories.forEach(cat => {
+                let catItems = items.filter(item => item.category === cat.id);
+
+                // 검색어 필터링
+                if (keyword) {
+                    catItems = catItems.filter(item => 
+                        item.title.toLowerCase().includes(keyword) || 
+                        (item.note && item.note.toLowerCase().includes(keyword)) ||
+                        (item.tag && item.tag.toLowerCase().includes(keyword))
+                    );
+                }
+
+                // 미완료만 보기 필터링
+                if (hideCompleted) {
+                    catItems = catItems.filter(item => !checkedMap[item.id]);
+                }
+
+                if (catItems.length === 0) return;
+                totalRenderedCount += catItems.length;
+
+                const allCatItems = items.filter(item => item.category === cat.id);
+                const doneCatCount = allCatItems.filter(item => checkedMap[item.id]).length;
+
+                // 카테고리별 인라인 실시간 카운트다운 HTML 생성
+                let inlineTimerHTML = '';
+                if (cat.id === 'daily') {
+                    inlineTimerHTML = `
+                        <span id="inlineTimer-daily" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200/70 dark:border-amber-800/60">
+                            리셋까지 --:--:--
+                        </span>
+                    `;
+                } else if (cat.id === 'weekly') {
+                    inlineTimerHTML = `
+                        <span id="inlineTimer-weekly" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/70 dark:border-emerald-800/60">
+                            리셋까지 -일 --:--:--
+                        </span>
+                    `;
+                } else if (cat.id === 'monthly') {
+                    inlineTimerHTML = `
+                        <div class="flex flex-wrap items-center gap-1.5 mt-1 sm:mt-0">
+                            <span id="inlineTimer-monthly-1" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800/60">
+                                1일 리셋까지 -일 --:--:--
+                            </span>
+                            <span id="inlineTimer-monthly-15" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800/60">
+                                15일 리셋까지 -일 --:--:--
+                            </span>
+                            <span id="inlineTimer-monthly-10" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60">
+                                10일 리셋까지 -일 --:--:--
+                            </span>
+                            <span id="inlineTimer-monthly-25" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60">
+                                25일 리셋까지 -일 --:--:--
+                            </span>
+                            <span id="inlineTimer-monthly-20-26" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200/70 dark:border-sky-800/60">
+                                20~26일 기간 확인 중...
+                            </span>
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <div class="space-y-3">
+                        <!-- 섹션 헤더 -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 px-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                    ${cat.badge}
+                                </span>
+                                <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">${cat.name}</h2>
+                                <span class="text-xs font-medium text-slate-400 dark:text-slate-500">· ${cat.resetInfo}</span>
+                                ${inlineTimerHTML}
+                            </div>
+                            <div class="flex items-center gap-2 ml-auto">
+                                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${doneCatCount} / ${allCatItems.length}</span>
+                                <button onclick="resetCategoryChecks('${cat.id}')" title="이 카테고리만 초기화" class="text-[11px] px-2 py-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition">
+                                    초기화
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 카드 그리드 -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            ${catItems.map(item => createItemCardHTML(item)).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (totalRenderedCount === 0) {
+                html = `
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl p-10 text-center border border-slate-200/80 dark:border-slate-800 space-y-2">
+                        <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">표시할 항목이 없습니다.</p>
+                        <p class="text-xs text-slate-400 dark:text-slate-500">모든 항목을 완료했거나 검색 조건에 맞는 항목이 없습니다.</p>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+            updateResetTimers();
+        }
+
+        // 개별 체크리스트 카드 HTML 생성
+        function createItemCardHTML(item) {
+            const isChecked = !!checkedMap[item.id];
+            const tagClass = TAG_STYLES[item.tagColor] || TAG_STYLES.blue;
+
+            return `
+                <div onclick="toggleItemCheck('${item.id}')" class="group relative flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer select-none card-transition ${
+                    isChecked 
+                    ? 'bg-slate-100/70 dark:bg-slate-900/40 border-slate-200/60 dark:border-slate-800/60 opacity-75' 
+                    : 'bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-600 shadow-sm hover:shadow'
+                }">
+                    <!-- 커스텀 체크박스 -->
+                    <div class="pt-0.5 shrink-0">
+                        <div class="w-6 h-6 rounded-lg border-2 flex items-center justify-center transition ${
+                            isChecked 
+                            ? 'bg-blue-600 border-blue-600 text-white check-pop' 
+                            : 'border-slate-300 dark:border-slate-600 group-hover:border-blue-500 bg-white dark:bg-slate-800'
+                        }">
+                            ${isChecked ? `
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <!-- 텍스트 내용 -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between gap-2">
+                            <h3 class="text-sm sm:text-[15px] font-semibold leading-snug transition ${
+                                isChecked 
+                                ? 'line-through text-slate-400 dark:text-slate-500' 
+                                : 'text-slate-900 dark:text-slate-100'
+                            }">
+                                ${escapeHTML(item.title)}
+                            </h3>
+                            ${item.tag ? `
+                                <span class="shrink-0 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${tagClass}">
+                                    ${escapeHTML(item.tag)}
+                                </span>
+                            ` : ''}
+                        </div>
+
+                        ${item.note ? `
+                            <p class="mt-1 text-xs leading-relaxed ${
+                                isChecked ? 'text-slate-400 dark:text-slate-600' : 'text-slate-500 dark:text-slate-400'
+                            }">
+                                ${escapeHTML(item.note)}
+                            </p>
+                        ` : ''}
+
+                        ${item.url ? `
+                            <div class="mt-2">
+                                <a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline">
+                                    <span>공략 / 상세 보기</span>
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 4. 체크 토글 및 초기화 기능
+        function toggleItemCheck(id) {
+            checkedMap[id] = !checkedMap[id];
+            if (!checkedMap[id]) delete checkedMap[id];
+            saveData();
+            renderAll();
+        }
+
+        function resetCategoryChecks(categoryId) {
+            const targetIds = items.filter(i => i.category === categoryId).map(i => i.id);
+            targetIds.forEach(id => delete checkedMap[id]);
+            saveData();
+            renderAll();
+            const catName = CATEGORIES.find(c => c.id === categoryId)?.name || '선택한 카테고리';
+            showToast(`${catName} 체크 상태가 초기화되었습니다.`);
+        }
+
+        function resetAllChecks() {
+            checkedMap = {};
+            saveData();
+            renderAll();
+            showToast('모든 항목의 체크가 해제되었습니다.');
+        }
+
+        // =====================================================================
+        // 5. 목록 편집 모달 및 공유 코드 내보내기 로직
+        // =====================================================================
+        function openEditorModal() {
+            const modal = document.getElementById('editorModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            document.getElementById('settingSiteTitle').value = siteMeta.title;
+            document.getElementById('settingSiteSubtitle').value = siteMeta.subtitle;
+            
+            renderEditorList();
+            updateExportCodeBox();
+        }
+
+        function closeEditorModal() {
+            const modal = document.getElementById('editorModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            resetItemForm();
+        }
+
+        function switchModalTab(tab) {
+            const btnManage = document.getElementById('tabBtnManage');
+            const btnShare = document.getElementById('tabBtnShare');
+            const tabManage = document.getElementById('modalTabManage');
+            const tabShare = document.getElementById('modalTabShare');
+
+            if (tab === 'manage') {
+                btnManage.className = 'px-4 py-2 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-900';
+                btnShare.className = 'px-4 py-2 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400';
+                tabManage.classList.remove('hidden');
+                tabShare.classList.add('hidden');
+            } else {
+                btnShare.className = 'px-4 py-2 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-900';
+                btnManage.className = 'px-4 py-2 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400';
+                tabShare.classList.remove('hidden');
+                tabManage.classList.add('hidden');
+                updateExportCodeBox();
+            }
+        }
+
+        // 항목 추가 및 수정 저장
+        function handleSaveItem(event) {
+            event.preventDefault();
+            const editId = document.getElementById('editItemId').value;
+            const category = document.getElementById('inputCategory').value;
+            const title = document.getElementById('inputTitle').value.trim();
+            const note = document.getElementById('inputNote').value.trim();
+            const tag = document.getElementById('inputTag').value.trim();
+            const tagColor = document.getElementById('inputTagColor').value;
+            const url = document.getElementById('inputUrl').value.trim();
+
+            if (!title) return;
+
+            if (editId) {
+                const idx = items.findIndex(i => i.id === editId);
+                if (idx !== -1) {
+                    items[idx] = { ...items[idx], category, title, note, tag, tagColor, url };
+                    showToast('항목이 수정되었습니다.');
+                }
+            } else {
+                const newItem = {
+                    id: 'custom-' + Date.now(),
+                    category,
+                    title,
+                    note,
+                    tag,
+                    tagColor,
+                    url
+                };
+                items.push(newItem);
+                showToast('새 항목이 추가되었습니다.');
+            }
+
+            saveData();
+            resetItemForm();
+            renderEditorList();
+            renderAll();
+            updateExportCodeBox();
+        }
+
+        function startEditItem(id) {
+            const item = items.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('editItemId').value = item.id;
+            document.getElementById('inputCategory').value = item.category;
+            document.getElementById('inputTitle').value = item.title;
+            document.getElementById('inputNote').value = item.note || '';
+            document.getElementById('inputTag').value = item.tag || '';
+            document.getElementById('inputTagColor').value = item.tagColor || 'blue';
+            document.getElementById('inputUrl').value = item.url || '';
+
+            document.getElementById('formModeLabel').textContent = '✎ 항목 수정 중';
+            document.getElementById('saveItemBtn').textContent = '수정 완료';
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+        }
+
+        function resetItemForm() {
+            document.getElementById('itemForm').reset();
+            document.getElementById('editItemId').value = '';
+            document.getElementById('formModeLabel').textContent = '+ 새 체크리스트 항목 추가';
+            document.getElementById('saveItemBtn').textContent = '목록에 추가';
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+        }
+
+        function deleteItem(id) {
+            items = items.filter(i => i.id !== id);
+            delete checkedMap[id];
+            saveData();
+            renderEditorList();
+            renderAll();
+            updateExportCodeBox();
+            showToast('항목이 삭제되었습니다.');
+        }
+
+        function moveItem(index, direction) {
+            const targetIndex = index + direction;
+            if (targetIndex < 0 || targetIndex >= items.length) return;
+            const temp = items[index];
+            items[index] = items[targetIndex];
+            items[targetIndex] = temp;
+            saveData();
+            renderEditorList();
+            renderAll();
+            updateExportCodeBox();
+        }
+
+        function restoreDefaultItems() {
+            items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+            checkedMap = {};
+            saveData();
+            renderEditorList();
+            renderAll();
+            updateExportCodeBox();
+            showToast('기본 샘플 목록으로 복원되었습니다.');
+        }
+
+        // 모달 내 편집 목록 렌더링
+        function renderEditorList() {
+            const listEl = document.getElementById('editorItemList');
+            document.getElementById('editorTotalCount').textContent = items.length;
+
+            const catNames = { daily: '일과', weekly: '주과', monthly: '월과', major: '주요' };
+
+            listEl.innerHTML = items.map((item, idx) => `
+                <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-xs">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-[10px] font-bold text-slate-600 dark:text-slate-300 shrink-0">
+                            ${catNames[item.category] || item.category}
+                        </span>
+                        <span class="font-semibold text-slate-800 dark:text-slate-100 truncate">${escapeHTML(item.title)}</span>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                        <button type="button" onclick="moveItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-30" title="위로">▲</button>
+                        <button type="button" onclick="moveItem(${idx}, 1)" ${idx === items.length - 1 ? 'disabled' : ''} class="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-30" title="아래로">▼</button>
+                        <button type="button" onclick="startEditItem('${item.id}')" class="px-2 py-1 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-semibold hover:bg-blue-100">수정</button>
+                        <button type="button" onclick="deleteItem('${item.id}')" class="px-2 py-1 rounded bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 font-semibold hover:bg-rose-100">삭제</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateSiteMeta() {
+            siteMeta.title = document.getElementById('settingSiteTitle').value.trim() || '모험가 일과·주과 내비';
+            siteMeta.subtitle = document.getElementById('settingSiteSubtitle').value.trim();
+            applySiteMeta();
+            saveData();
+        }
+
+        // 공유용 코드 생성 및 클립보드 복사
+        function updateExportCodeBox() {
+            const box = document.getElementById('exportCodeBox');
+            const formatted = `const DEFAULT_ITEMS = ${JSON.stringify(items, null, 4)};`;
+            box.value = formatted;
+        }
+
+        function copyExportCode() {
+            const box = document.getElementById('exportCodeBox');
+            box.select();
+            box.setSelectionRange(0, 99999);
+            try {
+                document.execCommand('copy');
+                showToast('공유용 코드가 클립보드에 복사되었습니다!');
+            } catch (err) {
+                showToast('복사에 실패했습니다. 텍스트를 직접 선택해 복사해 주세요.');
+            }
+        }
+
+        // 유틸리티: XSS 방지용 이스케이프 & 토스트 알림
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, match => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[match]));
+        }
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const box = document.getElementById('toastBox');
+            const text = document.getElementById('toastMessage');
+            text.textContent = msg;
+            box.classList.remove('opacity-0', 'translate-y-2');
+            box.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                box.classList.add('opacity-0', 'translate-y-2');
+                box.classList.remove('opacity-100', 'translate-y-0');
+            }, 2400);
+        }
+
+        // 페이지 로드 시 실행
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
