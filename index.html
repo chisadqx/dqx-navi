@@ -645,7 +645,7 @@ function matchesResetBucket(item, bucket) {
     if (bucket === 'weekly') {
         return item.category === 'weekly';
     }
-    if (bucket === 'monthly') {
+    if (item.category === 'monthly') {
         if (bucket === 'm20') return /20\s*[~～-]\s*26|20일/.test(text);
         if (bucket === 'm25') return /25일/.test(text);
         if (bucket === 'm15') return /15일/.test(text);
