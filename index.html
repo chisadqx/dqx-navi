@@ -674,7 +674,7 @@
             });
         }
 
-        function updatePeriodWindowBadge({ elementId, jstNow, startDay, endDay, resetHour }) {
+       function updatePeriodWindowBadge({ elementId, jstNow, startDay, endDay, resetHour }) {
             const el = document.getElementById(elementId);
             if (!el) return;
 
@@ -701,7 +701,51 @@
                 const isEndingSoon = remainingMs <= 3600 * 1000;
                 const activeClass = isEndingSoon
                     ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/70 dark:text-rose-400 border-rose-300 dark:border-rose-800 animate-pulse'
-                    : 'bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200/70 dark:border-sky-800/60';
+                    : 'bg-indigo-900/90 text-indigo-100 dark:bg-indigo-950 dark:text-indigo-200 border-indigo-700/80 dark:border-indigo-700';
+
+                el.className = `inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums border ${activeClass}`;
+                el.textContent = isEndingSoon
+                    ? `20일~26일 종료까지 ${formatDiff(remainingMs)} (임박)`
+                    : `20일~26일 진행 중 · 종료까지 ${formatDiff(remainingMs)}`;
+            } else {
+                // 진행 기간 외 -> 다음 20일 06:00 오픈까지 남은 시간
+                const nextStart = jstNow < currentStart
+                    ? currentStart
+                    : new Date(year, month + 1, startDay, resetHour, 0, 0, 0);
+                const remainingMs = nextStart - jstNow;
+                const idleClass = 'bg-slate-100 text-slate-600 dark:bg-slate-800/90 dark:text-slate-300 border-slate-200/80 dark:border-slate-700';
+
+                el.className = `inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums border ${idleClass}`;
+                el.textContent = `20일 오픈까지 ${formatDiff(remainingMs)}`;
+            }
+        }function updatePeriodWindowBadge({ elementId, jstNow, startDay, endDay, resetHour }) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+
+            const year = jstNow.getFullYear();
+            const month = jstNow.getMonth();
+
+            // 이번 달 기간(startDay 06:00 ~ endDay 06:00)
+            const currentStart = new Date(year, month, startDay, resetHour, 0, 0, 0);
+            const currentEnd = new Date(year, month, endDay, resetHour, 0, 0, 0);
+
+            const pad = (n) => String(n).padStart(2, '0');
+            const formatDiff = (ms) => {
+                const totalSec = Math.max(0, Math.floor(ms / 1000));
+                const d = Math.floor(totalSec / 86400);
+                const h = Math.floor((totalSec % 86400) / 3600);
+                const m = Math.floor((totalSec % 3600) / 60);
+                const s = totalSec % 60;
+                return `${d}일 ${pad(h)}:${pad(m)}:${pad(s)}`;
+            };
+
+            if (jstNow >= currentStart && jstNow < currentEnd) {
+                // 현재 20일 06:00 ~ 26일 05:59 진행 중 -> 종료(26일 06:00)까지 남은 시간
+                const remainingMs = currentEnd - jstNow;
+                const isEndingSoon = remainingMs <= 3600 * 1000;
+                const activeClass = isEndingSoon
+                    ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/70 dark:text-rose-400 border-rose-300 dark:border-rose-800 animate-pulse'
+                    : 'bg-indigo-900/90 text-indigo-100 dark:bg-indigo-950 dark:text-indigo-200 border-indigo-700/80 dark:border-indigo-700';
 
                 el.className = `inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums border ${activeClass}`;
                 el.textContent = isEndingSoon
