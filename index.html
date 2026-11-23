@@ -70,165 +70,426 @@
     <script>
         const DEFAULT_ITEMS = [
     {
-        "id": "d-1",
+        "id": "custom-1795442875954",
         "category": "daily",
-        "title": "일일 토벌 의뢰 (メギストリス 등)",
-        "note": "매일 06:00 리셋 · 4만 골드 / 특훈 스탬프",
-        "tag": "골드",
+        "title": "일일 토벌 퀘스트",
+        "note": "마을 입구에 있는 토벌대원에게서 퀘스트를 받으면 경험치 (특훈 스탬프) / 골드 / 명성 포인트 / 연금석 획득",
+        "tag": "경험치, 연금석",
         "tagColor": "amber",
         "url": ""
     },
     {
-        "id": "d-2",
+        "id": "custom-1795443198835",
         "category": "daily",
-        "title": "장인 길드 납품 의뢰",
-        "note": "매일 06:00 리셋 · 장인 경험치 및 길드 포인트",
-        "tag": "경험치",
-        "tagColor": "emerald",
-        "url": ""
-    },
-    {
-        "id": "d-3",
-        "category": "daily",
-        "title": "몬스터 목장 / 툴 출석 & 후쿠비키",
-        "note": "스마트폰 앱 연동 · 인연 포인트 및 코인",
-        "tag": "앱 연동",
-        "tagColor": "sky",
-        "url": ""
-    },
-    {
-        "id": "d-4",
-        "category": "daily",
-        "title": "강전사 서(強戦士の書) 오브 수집",
-        "note": "매일 06:00 리셋 · 무지개 오브 제작 재료",
-        "tag": "골드",
+        "title": "밭에 물과 거름 주기",
+        "note": "자신의 집의 밭 또는 친구의 집의 밭에 물과 거름 주기",
+        "tag": "작물",
         "tagColor": "amber",
         "url": ""
     },
     {
-        "id": "d-5",
+        "id": "custom-1795442933022",
         "category": "daily",
-        "title": "파니갈룸 (源世庫パニガルム) 일일 보너스",
-        "note": "창생주(創生珠) 획득 · 여신의 나무 육성",
-        "tag": "육성",
-        "tagColor": "purple",
+        "title": "장인 납품 의뢰",
+        "note": "자신이 소속된 장인의 길드 마스터의 납품 의뢰를 달성하면 장인 경험치 / 골드 획득",
+        "tag": "장인 경험치, 골드",
+        "tagColor": "amber",
         "url": ""
     },
     {
-        "id": "w-1",
+        "id": "custom-1795442947228",
+        "category": "daily",
+        "title": "강전사의 책 - 강보스",
+        "note": "보라색 상자에서 오브 획득",
+        "tag": "오브",
+        "tagColor": "amber",
+        "url": ""
+    },
+    {
+        "id": "custom-1795442963177",
+        "category": "daily",
+        "title": "마법의 미궁",
+        "note": "보라색 상자에서 후쿠비키권 2장 ~ 3장 획득",
+        "tag": "후쿠비키권 2장 ~ 3장",
+        "tagColor": "amber",
+        "url": ""
+    },
+    {
+        "id": "custom-1795442981079",
+        "category": "daily",
+        "title": "몬스터 배틀로드",
+        "note": "몬스터 배틀로드 참가권을 매일 1장씩 자동 지급",
+        "tag": "배틀로드 참가권 1장",
+        "tagColor": "amber",
+        "url": "https://naver.me/x8kokBUU"
+    },
+    {
+        "id": "custom-1795443007564",
+        "category": "daily",
+        "title": "낚시 노사의 납품 의뢰",
+        "note": "낚시 노사의 물고기 납품 의뢰를 달성하면 낚시 경험치 / 물고기 코인 획득",
+        "tag": "낚시 경험치, 물고기 코인",
+        "tagColor": "amber",
+        "url": ""
+    },
+    {
+        "id": "custom-1795443047724",
+        "category": "daily",
+        "title": "강전사의 책 - 동맹 배틀",
+        "note": "동맹 배틀의 보스 (진 재액의 왕, 다크드레암, 야채삼총사, 시도)를 잡으면 구제 포인트 획득",
+        "tag": "구제 포인트",
+        "tagColor": "amber",
+        "url": ""
+    },
+    {
+        "id": "custom-1795443063547",
+        "category": "daily",
+        "title": "상암의 성전",
+        "note": "보라색 상자에서 난이도에 따른 레그나라이트 7개 ~ 10개 획득",
+        "tag": "레그나라이트",
+        "tagColor": "amber",
+        "url": "https://naver.me/xrzvzyZf"
+    },
+    {
+        "id": "custom-1795443084902",
+        "category": "daily",
+        "title": "성수호자의 투전기",
+        "note": "보라색 상자에서 난이도에 따른 날개 2개 ~ 8개 획득",
+        "tag": "날개",
+        "tagColor": "amber",
+        "url": "https://naver.me/5If5flah"
+    },
+    {
+        "id": "custom-1795443106160",
+        "category": "daily",
+        "title": "심연의 죄인들",
+        "note": "보라색 상자에서 난이도에 따른 과실 (4인) / 라쿠리마 (8인) 획득",
+        "tag": "과실 (4인) 또는 라쿠리마 (8인)",
+        "tagColor": "amber",
+        "url": "https://naver.me/FdqMqEKA"
+    },
+    {
+        "id": "custom-1795443258203",
+        "category": "daily",
+        "title": "가위바위보",
+        "note": "새 에테네 마을에 있는 パラシェ와 가위바위보에 승리하면 후쿠비키권 1장 획득",
+        "tag": "후쿠비키권 1장",
+        "tagColor": "amber",
+        "url": ""
+    },
+    {
+        "id": "custom-1795443320308",
+        "category": "daily",
+        "title": "배틀 트리니티 우승 트로피",
+        "note": "배틀 트리니티 대항전 우승 팀의 마을 \"글렌\" 여관에 있는 트로피 앞에서「グレンドラゴニア」라고 채팅을 하면 후쿠비키권 1장 획득",
+        "tag": "후쿠비키권 1장",
+        "tagColor": "amber",
+        "url": ""
+    },
+    {
+        "id": "custom-1795443352444",
+        "category": "daily",
+        "title": "메레아데의 방 - 냥 코인",
+        "note": "메레아데의 방에 있는 고양이들을 조사하면 냥 코인을 1장 획득",
+        "tag": "냥 코인 1장",
+        "tagColor": "amber",
+        "url": "https://naver.me/GowjwBfm"
+    },
+    {
+        "id": "custom-1795443407337",
+        "category": "daily",
+        "title": "마인 세포 파밍",
+        "note": "마계의 大審門에 있는 魔獣調教師ガブラ에게 주술을 받으면 30분간 마계의 몬스터에게서 마인 세포와 마인 세포 조각이 드랍된다",
+        "tag": "마인 세포, 마인 세포 조각",
+        "tagColor": "amber",
+        "url": "https://naver.me/IMZIZRZ3"
+    },
+    {
+        "id": "custom-1795443483558",
         "category": "weekly",
-        "title": "주간 토벌 의뢰 (진·위 렌더시아)",
-        "note": "매주 일요일 06:00 리셋 · 경험치 2회분 확보 가능",
-        "tag": "경험치",
+        "title": "주간 토벌 퀘스트",
+        "note": "진짜 그란제도라, 가짜 그란제도라의 토벌대원에게서 주간 토벌 퀘스트를 받으면 경험치 (특훈 스탬프) / 연금석 / 후쿠비키 (의뢰서) 획득",
+        "tag": "경험치, 연금석",
         "tagColor": "emerald",
         "url": ""
     },
     {
-        "id": "w-2",
+        "id": "custom-1795443528927",
         "category": "weekly",
-        "title": "피라미드의 비보 (브로치 / 앙크)",
-        "note": "매주 일요일 06:00 리셋 · 황금 브로치 확정 층 확인",
-        "tag": "액세서리",
-        "tagColor": "rose",
-        "url": ""
+        "title": "피라미드",
+        "note": "피라미드의 보물들을 감정하면 브로치와 앙크 악세서리 획득",
+        "tag": "브로치, 앙크 악세서리",
+        "tagColor": "emerald",
+        "url": "https://naver.me/FsoZohkV"
     },
     {
-        "id": "w-3",
+        "id": "custom-1795443586459",
         "category": "weekly",
-        "title": "만마의 탑 (万魔の塔) 주간 보상",
-        "note": "매주 일요일 06:00 리셋 · 문장(紋章) 및 대문장 파편",
-        "tag": "액세서리",
-        "tagColor": "rose",
-        "url": ""
+        "title": "왕가의 미궁",
+        "note": "왕가의 미궁의 입장에 필요한 용기의 휘석을 15개 획득",
+        "tag": "용기의 휘석 15개",
+        "tagColor": "emerald",
+        "url": "https://naver.me/xgXlXGUZ"
     },
     {
-        "id": "w-4",
+        "id": "custom-1795443627389",
         "category": "weekly",
-        "title": "시련의 문 (試練の門)",
-        "note": "매주 일요일 06:00 리셋 · 레벨업 및 보주 구슬",
-        "tag": "경험치",
+        "title": "강전사의 책 - 시련의 문",
+        "note": "시련의 문에 있는 몬스터를 잡으면 경험치 (특훈 스탬프) / 골드 / 달인의 오브의 보주 획득",
+        "tag": "대량의 경험치, 오브",
         "tagColor": "emerald",
         "url": ""
     },
     {
-        "id": "w-5",
+        "id": "custom-1795443747406",
         "category": "weekly",
-        "title": "달인 퀘스트 (達人クエスト)",
-        "note": "매주 일요일 06:00 리셋 · 보주(宝珠) 최대 5개 보상",
-        "tag": "육성",
-        "tagColor": "purple",
+        "title": "게시판 팁 주기",
+        "note": "술집의 게시판에서 みんなのお知らせ広場 → トップ10掲示板에서 원하는 글에「おひねり!」를 최소 100 골드까지 하면 후쿠비키 5장 획득",
+        "tag": "후쿠비키 5장",
+        "tagColor": "emerald",
         "url": ""
     },
     {
-        "id": "w-6",
+        "id": "custom-1795443790822",
         "category": "weekly",
-        "title": "에피소드 의뢰장 & 천성향 의뢰장",
-        "note": "매주 일요일 06:00 리셋 · 연금석 / 경험치 고서",
-        "tag": "보상",
+        "title": "달인 퀘스트",
+        "note": "달인 퀘스트의 의뢰 (과제)를 달성하면 원하는 속성의 보주를 획득 & 감정할 수 있다",
+        "tag": "원하는 속성의 보주",
+        "tagColor": "emerald",
+        "url": ""
+    },
+    {
+        "id": "custom-1795443834295",
+        "category": "weekly",
+        "title": "빙고권, 카지노 플레이 티켓 선물",
+        "note": "매주 금요일 여관의 컨시어지에게서 빙고권 1장과 카지노 플레이 티켓 3장을 받을 수 있다",
+        "tag": "빙고권 1장, 카지노 플레이 티켓 3장",
+        "tagColor": "emerald",
+        "url": ""
+    },
+    {
+        "id": "custom-1795443879928",
+        "category": "daily",
+        "title": "물가에 빛나는 통 (수영해야함)",
+        "note": "주렛토 마을의 물가에 있는 빛나는 통을 조사하면 다양한 아이템 획득",
+        "tag": "메탈미궁초대권 등",
+        "tagColor": "emerald",
+        "url": ""
+    },
+    {
+        "id": "custom-1795443916822",
+        "category": "weekly",
+        "title": "아스펠드 학원 (우정의 빛)",
+        "note": "같은 반 동료에게 좋아요!를 하면 우정의 빛 300 포인트 획득",
+        "tag": "우정의 빛 300 포인트",
+        "tagColor": "emerald",
+        "url": ""
+    },
+    {
+        "id": "custom-1795443945176",
+        "category": "weekly",
+        "title": "아스펠드 학원 (레슨 티켓)",
+        "note": "자신의 반에서 수업을 받는데 필요한 레슨 티켓을 3장 받을 수 있다",
+        "tag": "레슨 티켓 3장",
+        "tagColor": "emerald",
+        "url": ""
+    },
+    {
+        "id": "custom-1795443993227",
+        "category": "weekly",
+        "title": "만마의 탑",
+        "note": "하이스코어 (최대 48만 포인트)와 기람 소울로 문장과 대문장으로 교환할 수 있다",
+        "tag": "문장, 대문장 악세서리",
+        "tagColor": "emerald",
+        "url": "https://naver.me/Ffs5s0Ca"
+    },
+    {
+        "id": "custom-1795444029989",
+        "category": "weekly",
+        "title": "대마왕 대필가 - 에피소드 의뢰장",
+        "note": "에피소드 의뢰장에 있는 의뢰를 클리어하면 경험치 (특훈 스탬프) / 연금석 등 다양한 아이템 획득",
+        "tag": "경험치, 연금석",
+        "tagColor": "emerald",
+        "url": "https://naver.me/GB3230XJ"
+    },
+    {
+        "id": "custom-1795444049661",
+        "category": "weekly",
+        "title": "천사의 궁극 피트니스",
+        "note": "트레이닝 육성장에 있는 의뢰를 클리어하면 경험치 (특훈 스탬프) / 연금석 등 다양한 아이템 획득",
+        "tag": "경험치, 연금석",
+        "tagColor": "emerald",
+        "url": "https://naver.me/GRDQDAUT"
+    },
+    {
+        "id": "custom-1795444093244",
+        "category": "weekly",
+        "title": "발리부트캠프",
+        "note": "위클리 미션을 달성하면 경험치 (특훈 스탬프) / 후쿠비키권을 받을 수 있다",
+        "tag": "경험치, 후쿠비키권",
+        "tagColor": "emerald",
+        "url": "https://naver.me/F1aZaFq3"
+    },
+    {
+        "id": "custom-1795444199816",
+        "category": "weekly",
+        "title": "이계 아스탈지아 - 마음의 결정",
+        "note": "이계의 동료들과 이계 조사에서 최심부의 보스를 잡으면 마음의 결정 90개 획득",
+        "tag": "마음의 결정 90개",
+        "tagColor": "emerald",
+        "url": "https://naver.me/57424NSS"
+    },
+    {
+        "id": "custom-1795444277567",
+        "category": "weekly",
+        "title": "이계 아스탈지아 - 황제가 창조한 것",
+        "note": "가나사다이 마음의 사념 효과 변경을 할 수 있는 사악한 사념편을 10개 획득",
+        "tag": "사악한 사념편 10개",
+        "tagColor": "emerald",
+        "url": "https://naver.me/FwGDGNLV"
+    },
+    {
+        "id": "custom-1795444537038",
+        "category": "weekly",
+        "title": "이계 아스탈지아 - 선물 아이템 교환",
+        "note": "이계의 동료들과 이계 조사에서 아스탈지아의 파편을 모아서 형제자매에게 이계의 동료들에게 줄 수 있는 선물 아이템 교환할 수 있다",
+        "tag": "선물 아이템 교환",
+        "tagColor": "emerald",
+        "url": "https://naver.me/FvTqT7CU"
+    },
+    {
+        "id": "custom-1795444585988",
+        "category": "weekly",
+        "title": "마물 박사의 모험적인 실험 - 솔로 배틀",
+        "note": "도전할 수 있는 보스에 따라서 마물의 마음으로 교환할 수 있는 마음의 결정을 1개씩 획득",
+        "tag": "마물의 마음의 결정 1개",
+        "tagColor": "emerald",
+        "url": "https://naver.me/G5k6kQph"
+    },
+    {
+        "id": "custom-1795444676968",
+        "category": "monthly",
+        "title": "아스펠드 학원 - 설비 이용권",
+        "note": "매월 1일에 자신이 속한 부에 이용할 수 있는 설비의 이용권을 20장 받을 수 있다",
+        "tag": "설비 이용권 20장",
+        "tagColor": "blue",
+        "url": "https://naver.me/G5k6kQUG"
+    },
+    {
+        "id": "custom-1795444827011",
+        "category": "monthly",
+        "title": "아스펠드 학원 - 강화 주간",
+        "note": "매월 1일 6:00 ~ 8일 5:59까지 : 자신이 소속된 부장과 대화하면 티켓을 받을 수 있고 목표에 도전할 수 있다",
+        "tag": "강화 주간 티켓 10장",
+        "tagColor": "blue",
+        "url": "https://naver.me/5reneZyg"
+    },
+    {
+        "id": "custom-1795444894303",
+        "category": "monthly",
+        "title": "이계 아스탈지아 - 이계 투기장",
+        "note": "매월 1일에 갱신되는 보스를 특정 조건으로 클리어하면 보상 획득",
+        "tag": "천계의 돌, 마음의 결정, 황금 꽃잎",
+        "tagColor": "blue",
+        "url": "https://naver.me/GDQ6QaeA"
+    },
+    {
+        "id": "custom-1795444964147",
+        "category": "monthly",
+        "title": "황혼의 주전기 (매월 1일 / 15일)",
+        "note": "강력한 보스를 흉내내는 연기자들을 제한 시간 내에 잡는 것이 목표",
+        "tag": "원기옥, 연금석 등",
+        "tagColor": "blue",
+        "url": "https://naver.me/FjmPmb7y"
+    },
+    {
+        "id": "custom-1795445020592",
+        "category": "monthly",
+        "title": "혼명고 파니가룸 (매월 1일 / 15일)",
+        "note": "혼명의 정령의 육성에 필요한 혼명정과 여신의 나무의 육성에 필요한 창생주 획득",
+        "tag": "혼명정, 창생주",
+        "tagColor": "blue",
+        "url": "https://naver.me/FetltXdJ"
+    },
+    {
+        "id": "custom-1795445076847",
+        "category": "monthly",
+        "title": "로스터 (매월 1일 / 15일)",
+        "note": "모코모코 하우스의 로스터가 제시한 마법의 미궁의 보스를 잡으면 악세서리 획득",
+        "tag": "악세서리",
+        "tagColor": "blue",
+        "url": "https://naver.me/G3vCvP9l"
+    },
+    {
+        "id": "custom-1795445133614",
+        "category": "monthly",
+        "title": "레몬 슬라임 퀴즈 (매월 1일 / 15일)",
+        "note": "정체불명의 몬스터의 흉내를 내는 슬라임을 보고 어떤 몬스터를 흉내냈는지 맞추는 컨텐츠",
+        "tag": "경험치, 후쿠비키권",
+        "tagColor": "blue",
+        "url": "https://naver.me/IMZIZ4Nc"
+    },
+    {
+        "id": "custom-1795445192518",
+        "category": "monthly",
+        "title": "매월 이용 특전 (매월 15일)",
+        "note": "매월 1일에 이용 요금 기간이 유효한 분들에게 15일에 가타라의 継続特典係ミノノ에게서 황금 꽃잎을 받을 수 있다",
+        "tag": "황금 꽃잎 1개",
+        "tagColor": "blue",
+        "url": "https://naver.me/Gzd3dhBk"
+    },
+    {
+        "id": "custom-1795445250394",
+        "category": "monthly",
+        "title": "텐의 날 - 선물 티켓 (매월 10일)",
+        "note": "매월 10일 특정 마을에 출현하는 쿠 쨩에게서 선물 티켓을 획득",
+        "tag": "선물 티켓 1장",
+        "tagColor": "blue",
+        "url": "https://naver.me/F7FqFnCN"
+    },
+    {
+        "id": "custom-1795445337721",
+        "category": "monthly",
+        "title": "용사 공주의 방 - 빛의 문",
+        "note": "10일 6:00 ~ 다음달 10일 5:59까지 빛의 문을 조사하면「覚醒の秘石」를 받을 수 있다",
+        "tag": "각성의 비석 1개",
         "tagColor": "blue",
         "url": ""
     },
     {
-        "id": "m-1",
+        "id": "custom-1795445455124",
         "category": "monthly",
-        "title": "사신의 궁전 (邪神の宮殿)",
-        "note": "매월 10일 / 25일 갱신 · 전신의 벨트 봉인 및 천옥",
-        "tag": "정기",
-        "tagColor": "indigo",
-        "url": ""
+        "title": "사신의 궁전 (10일 / 25일)",
+        "note": "1층(옥) ~ 4층(옥)의 보스를 잡으면 연금석과 전신의 벨트 획득",
+        "tag": "연금석, 전신의 벨트",
+        "tagColor": "purple",
+        "url": "https://naver.me/5kPrPEOm"
     },
     {
-        "id": "m-2",
+        "id": "custom-1795445534781",
         "category": "monthly",
-        "title": "로스트 아키텍트 / 황혼의 주사정",
-        "note": "매월 1일 / 15일 갱신 · 황금 꽃잎 및 호화 보상",
-        "tag": "정기",
-        "tagColor": "indigo",
-        "url": ""
+        "title": "보물 사진 (업데이트 당 1번)",
+        "note": "버전 업데이트 당 1번 비정기적으로 개최. 보물 사진에 있는 장소에 가서 보물을 캐면 아이템 획득",
+        "tag": "연금석 외",
+        "tagColor": "rose",
+        "url": "https://naver.me/xxo0oqSU"
     },
     {
-        "id": "m-3",
+        "id": "custom-1795445583103",
         "category": "monthly",
-        "title": "테스의 날 (テンの日) 프레젠트 티켓",
-        "note": "매월 10일 한정 · 보스 카드 & 프레젠트 티켓 수령",
-        "tag": "월간 이벤트",
-        "tagColor": "amber",
-        "url": ""
-    },
-    {
-        "id": "m-4",
-        "category": "monthly",
-        "title": "월간 기간 한정 콘텐츠 (20일 ~ 26일)",
-        "note": "매월 20일 06:00 ~ 26일 05:59 진행",
-        "tag": "기간 한정",
+        "title": "마물 박사의 모험적인 실험 - 동맹 배틀",
+        "note": "파티원들과 협력해서 보스를 잡으면 마물의 마음의 교환에 필요한 몬스터 하트를 획득",
+        "tag": "몬스터 하트 1개",
         "tagColor": "sky",
-        "url": ""
+        "url": "https://naver.me/xgXlXLWg"
     },
     {
-        "id": "c-1",
-        "category": "major",
-        "title": "성수호자의 투전기 / 심연의 죄인들",
-        "note": "일일 유색 수정 / 라크리마 수집 · 드레스업 장비 및 반지",
-        "tag": "엔드",
+        "id": "custom-1795445747727",
+        "category": "monthly",
+        "title": "DQX 샵 포인트 배포",
+        "note": "매월 25일 전후에 DQX 샵 포인트를 100 포인트 배포",
+        "tag": "샵 포인트 100P",
         "tagColor": "rose",
-        "url": ""
-    },
-    {
-        "id": "c-2",
-        "category": "major",
-        "title": "코인 보스 (신규 보스 액세서리 완성)",
-        "note": "로자리오 / 라스트 쵸커 / 가면 등 이론치 제작",
-        "tag": "액세서리",
-        "tagColor": "rose",
-        "url": ""
-    },
-    {
-        "id": "c-3",
-        "category": "major",
-        "title": "아스톨티아 방위군 (防衛軍)",
-        "note": "전리품 교환 · 속성 방패 및 무기 파밍",
-        "tag": "장비",
-        "tagColor": "blue",
         "url": ""
     }
 ];
@@ -1471,3 +1732,4 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
